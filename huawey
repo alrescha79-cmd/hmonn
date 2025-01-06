@@ -1,0 +1,9 @@
+
+config huawey 'settings'
+	option router_ip '192.168.8.1'
+	option username 'admin'
+	option password 'Q840R3T778Q'
+	option telegram_token '7539902094:AAFvxXbo2v8NCLEctaCYMSJqyL_62GtEWvo'
+	option chat_id '-1002257010628'
+	option message_thread_id '20'
+
