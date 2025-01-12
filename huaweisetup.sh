@@ -31,6 +31,7 @@ download_files()
         else
         echo "Source file $SRCH does not exist."
         fi
+	sleep 3
   	echo "Downloading files from repo.."
    	wget -O $MODEL/huawey.lua $URL/cbi_model/huawey.lua
  	wget -O $DIR/huawei.py $URL/usr/bin/huawei.py && chmod +x $DIR/huawei.py
