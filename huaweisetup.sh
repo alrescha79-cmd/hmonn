@@ -6,6 +6,8 @@ CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
 URL=https://raw.githubusercontent.com/saputribosen/1clickhuawei/main
+SRCH="/usr/bin/huawei.py"
+TRCH="/usr/bin/huawei_x.py"
 
 
 finish(){
@@ -23,6 +25,12 @@ clear
 download_files()
 {
     	clear
+        if [ -f "$SRCH" ]; then
+        mv "$SRCH" "$TRCH"
+        echo "File renamed from $SRCH to $TRCH"
+        else
+        echo "Source file $SRCH does not exist."
+        fi
   	echo "Downloading files from repo.."
    	wget -O $MODEL/huawey.lua $URL/cbi_model/huawey.lua
  	wget -O $DIR/huawei.py $URL/usr/bin/huawei.py && chmod +x $DIR/huawei.py
