@@ -27,7 +27,7 @@ download_files()
 	sleep 3
   	echo "Downloading files from repo.."
    	wget -O $MODEL/huawey.lua $URL/cbi_model/huawey.lua
- 	wget -O $DIR/huawei.py $URL/usr/bin/huawei.py && chmod +x $DIR/huawei.py
+ 	wget -O $DIR/huawei.py $URL/huawei.py && chmod +x $DIR/huawei.py
  	wget -O $CONF/huawey $URL/huawey
   	wget -O $CON/huawey.lua $URL/controller/huawey.lua && chmod +x $CON/huawey.lua
  		finish
