@@ -1,6 +1,6 @@
 local map, section, option
 
-map = Map("huawey", "Huawei Configuration", "Configure Huawei router settings")
+map = Map("huawey", "Huawei Configuration", "Configure Huawei router settings. ALL Modem HUAWEI (Orbit, E5577,E3372, E5573 Etc.)")
 
 section = map:section(NamedSection, "settings", "huawey", "Settings")
 section.addremove = false
