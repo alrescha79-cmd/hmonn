@@ -49,12 +49,12 @@ function stopauto() {
 
 function start() {
   echo -e "Starting ${SERVICE_NAME} service ..."
-  screen -AmdS internet-indicator "${0}" -l
+  screen -AmdS huawei-monitor "${0}" -l
 }
 
 function stop() {
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep internet-indicator | awk -F '[.]' {'print $1'}) 2>/dev/null || echo "Service not running"
+  kill $(screen -list | grep huawei-monitor | awk -F '[.]' {'print $1'}) 2>/dev/null || echo "Service not running"
 }
 
 function configure() {
