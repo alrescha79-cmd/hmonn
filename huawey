@@ -6,5 +6,6 @@ config huawey 'settings'
 	option telegram_token '7539902094:AAFvxXbo2v8NCLEctaCYSJqyL_62GtEWvo'
 	option chat_id '-1002257012628'
 	option message_thread_id '2'
-	option lan_off_duration '20'
+	option lan_off_duration '5'
+	option modem_path 'huawei.py'
 
