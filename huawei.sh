@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Internet Indicator for Huawei Controller
-# Huawei 
-# Aryo Brokolly
+# Internet Monitor for Huawei
+# by Aryo Brokolly (youtube)
+# 1.0
 
 
 if [ "$(id -u)" != "0" ]; then
@@ -10,7 +10,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-SERVICE_NAME="Internet Indicator"
+SERVICE_NAME="Internet Monitor For Huawei"
 DEFAULT_LAN_OFF_DURATION=20
 DEFAULT_CHECK_INTERVAL=1
 
