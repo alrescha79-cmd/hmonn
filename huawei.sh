@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Internet Indicator for HG680P Wrapper with Manual Menu
-# by Lutfa Ilham & Modified by Aryo
-# v2.0
-# GPIO Founder Lutfa Ilham
+# Internet Indicator for Huawei Controller
+# Huawei 
+# Aryo Brokolly
+
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
