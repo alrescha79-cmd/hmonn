@@ -38,6 +38,14 @@ function loop() {
   done
 }
 
+function startauto() {
+  huawei -r
+}
+
+function stopauto() {
+  huawei -s
+}
+
 function start() {
   echo -e "Starting ${SERVICE_NAME} service ..."
   screen -AmdS internet-indicator "${0}" -l
@@ -79,10 +87,10 @@ function menu() {
 
     case $choice in
       1)
-        start
+        startauto
         ;;
       2)
-        stop
+        stopauto
         ;;
       3)
         configure
