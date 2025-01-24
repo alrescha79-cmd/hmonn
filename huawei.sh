@@ -13,7 +13,6 @@ SERVICE_NAME="Huawei Monitor"
 CONFIG_FILE="/etc/config/huawey"
 DEFAULT_CHECK_INTERVAL=1
 
-# Load configuration from file
 if [ -f "$CONFIG_FILE" ]; then
   source <(grep -E "^\s*option" "$CONFIG_FILE" | sed -E 's/option ([^ ]+) (.+)/\1=\2/')
 else
@@ -22,6 +21,7 @@ else
 fi
 
 LAN_OFF_DURATION=${lan_off_duration:-5}
+MODEM_PATH=${modem_path}
 CHECK_INTERVAL=$DEFAULT_CHECK_INTERVAL
 
 function loop() {
@@ -36,20 +36,12 @@ function loop() {
 
     if [ "$lan_off_timer" -ge "$LAN_OFF_DURATION" ]; then
       echo "LAN off selama $LAN_OFF_DURATION detik, menjalankan huawei.py ..."
-      python3 /usr/bin/huawei.py
+      $MODEM_PATH
       lan_off_timer=0 
     fi
 
     sleep "$CHECK_INTERVAL"
   done
-}
-
-function startauto() {
-  huawei -r
-}
-
-function stopauto() {
-  huawei -s
 }
 
 function start() {
@@ -75,53 +67,11 @@ function configure() {
   echo " - Durasi LAN Off: $LAN_OFF_DURATION detik"
 }
 
-function manual_run() {
-  echo "Menjalankan monitor secara manual dengan interval $CHECK_INTERVAL detik dan durasi LAN off $LAN_OFF_DURATION detik ..."
-  loop
-}
-
-function menu() {
-  while true; do
-    echo -e "\n===== ${SERVICE_NAME} Menu ====="
-    echo "1. Jalankan Service"
-    echo "2. Hentikan Service"
-    echo "3. Konfigurasi Interval dan Durasi"
-    echo "4. Jalankan Manual (Foreground)"
-    echo "5. Keluar"
-    echo "============================"
-    read -p "Pilih opsi [1-5]: " choice
-
-    case $choice in
-      1)
-        startauto
-        ;;
-      2)
-        stopauto
-        ;;
-      3)
-        configure
-        ;;
-      4)
-        manual_run
-        ;;
-      5)
-        echo "Keluar dari menu."
-        exit 0
-        clear
-        ;;
-      *)
-        echo "Pilihan tidak valid, coba lagi."
-        ;;
-    esac
-  done
-}
-
 function usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
   -s  Stop ${SERVICE_NAME} service
-  -m  Open menu
 EOF
 }
 
@@ -134,9 +84,6 @@ case "${1}" in
     ;;
   -s)
     stop
-    ;;
-  -m)
-    menu
     ;;
   *)
     usage
