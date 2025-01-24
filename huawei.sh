@@ -22,6 +22,7 @@ function loop() {
   lan_off_timer=0
   while true; do
     hgledon -lan dis
+    bledon -lan dis
     if curl -X "HEAD" --connect-timeout 3 -so /dev/null "http://bing.com"; then
       lan_off_timer=0
     else
