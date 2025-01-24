@@ -94,6 +94,7 @@ function menu() {
       5)
         echo "Keluar dari menu."
         exit 0
+        clear
         ;;
       *)
         echo "Pilihan tidak valid, coba lagi."
