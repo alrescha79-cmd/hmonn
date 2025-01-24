@@ -33,7 +33,7 @@ option = section:option(Value, "message_thread_id", "Message Thread ID")
 option.datatype = "integer"
 option.default = 0
 
-option = section:option(Value, "lan_off_duration", "LAN Off Duration")
+option = section:option(Value, "lan_off_duration", "Ping Duration")
 option.datatype = "uinteger"
 option.default = 5
 
@@ -41,13 +41,12 @@ option = section:option(Value, "modem_path", "Modem Path")
 option.default = "/usr/bin/huawei.py"
 
 -- Add a button for starting/stopping the service
-service_btn = section:option(Button, "_service", "Start Service")
+service_btn = section:option(Button, "_service", "Control Services")
 service_btn.inputstyle = "apply"
 
--- Add a custom title field
-status_title = section:option(DummyValue, "_status_title", ".")
+-- Add a custom title field for service control
+status_title = section:option(DummyValue, "_status_title", ".", "")
 status_title.rawhtml = true
-
 
 -- Check if the service is running by checking /etc/rc.local
 local function is_service_running()
@@ -59,11 +58,11 @@ end
 -- Update button text and title based on service status
 local function update_status()
   if is_service_running() then
-    service_btn.title = "Stop Service"
+    service_btn.inputtitle = "Stop Service" -- Set the button label dynamically
     service_btn.inputstyle = "remove"
     status_title.value = '<span style="color:green;">Service is Running</span>'
   else
-    service_btn.title = "Start Service"
+    service_btn.inputtitle = "Start Service" -- Set the button label dynamically
     service_btn.inputstyle = "apply"
     status_title.value = '<span style="color:red;">Service is Stopped</span>'
   end
