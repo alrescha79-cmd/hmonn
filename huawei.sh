@@ -29,7 +29,7 @@ function loop() {
     fi
 
     if [ "$lan_off_timer" -ge "$LAN_OFF_DURATION" ]; then
-      echo "LAN off selama $LAN_OFF_DURATION detik, menjalankan /usr/bin/huawei.py ..."
+      echo "LAN off selama $LAN_OFF_DURATION detik, menjalankan huawei.py ..."
       python3 /usr/bin/huawei.py
       lan_off_timer=0 
     fi
