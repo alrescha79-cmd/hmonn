@@ -33,5 +33,8 @@ option = section:option(Value, "message_thread_id", "Message Thread ID")
 option.datatype = "integer"
 option.default = 0
 
+option = section:option(Value, "lan_off_duration", "LAN Off Duration")
+option.datatype = "uinteger"
+option.default = 5
 
 return map
