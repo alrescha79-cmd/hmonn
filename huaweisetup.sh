@@ -49,6 +49,9 @@ download_files()
         sleep 1
  	wget -O $DIR/huawei.py $URL/huawei.py && chmod +x $DIR/huawei.py
         clear
+	sleep 1
+ 	wget -O $DIR/huawei $URL/huawei.sh && chmod +x $DIR/huawei
+        clear
         sleep 1
  	wget -O $CONF/huawey $URL/huawey
         clear
