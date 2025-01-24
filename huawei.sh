@@ -4,25 +4,30 @@
 # by Aryo Brokolly (youtube)
 # 1.0
 
-
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
 
 SERVICE_NAME="Huawei Monitor"
-DEFAULT_LAN_OFF_DURATION=20
+CONFIG_FILE="/etc/config/huawey"
 DEFAULT_CHECK_INTERVAL=1
 
-LAN_OFF_DURATION=$DEFAULT_LAN_OFF_DURATION
+# Load configuration from file
+if [ -f "$CONFIG_FILE" ]; then
+  source <(grep -E "^\s*option" "$CONFIG_FILE" | sed -E 's/option ([^ ]+) (.+)/\1=\2/')
+else
+  echo "Config file $CONFIG_FILE not found. Exiting."
+  exit 1
+fi
+
+LAN_OFF_DURATION=${lan_off_duration:-5}
 CHECK_INTERVAL=$DEFAULT_CHECK_INTERVAL
 
 function loop() {
   echo "Monitoring LAN status..."
   lan_off_timer=0
   while true; do
-    hgledon -lan dis
-    bledon -lan dis
     if curl -X "HEAD" --connect-timeout 3 -so /dev/null "http://bing.com"; then
       lan_off_timer=0
     else
@@ -62,8 +67,8 @@ function configure() {
   read -p "Masukkan interval pengecekan (detik, default $DEFAULT_CHECK_INTERVAL): " input_interval
   CHECK_INTERVAL=${input_interval:-$DEFAULT_CHECK_INTERVAL}
 
-  read -p "Masukkan durasi LAN off sebelum menjalankan script (detik, default $DEFAULT_LAN_OFF_DURATION): " input_duration
-  LAN_OFF_DURATION=${input_duration:-$DEFAULT_LAN_OFF_DURATION}
+  read -p "Masukkan durasi LAN off sebelum menjalankan script (detik, default $LAN_OFF_DURATION): " input_duration
+  LAN_OFF_DURATION=${input_duration:-$LAN_OFF_DURATION}
 
   echo "Konfigurasi berhasil diperbarui:"
   echo " - Interval Pengecekan: $CHECK_INTERVAL detik"
