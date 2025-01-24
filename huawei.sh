@@ -11,8 +11,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SERVICE_NAME="Internet Indicator"
-DEFAULT_LAN_OFF_DURATION=20 # Default durasi waktu untuk LAN off (detik)
-DEFAULT_CHECK_INTERVAL=1    # Default interval pengecekan (detik)
+DEFAULT_LAN_OFF_DURATION=20
+DEFAULT_CHECK_INTERVAL=1
 
 LAN_OFF_DURATION=$DEFAULT_LAN_OFF_DURATION
 CHECK_INTERVAL=$DEFAULT_CHECK_INTERVAL
@@ -28,11 +28,10 @@ function loop() {
       lan_off_timer=$((lan_off_timer + CHECK_INTERVAL))
     fi
 
-    # Jika LAN off lebih dari waktu yang ditentukan, jalankan script Python
     if [ "$lan_off_timer" -ge "$LAN_OFF_DURATION" ]; then
       echo "LAN off selama $LAN_OFF_DURATION detik, menjalankan /usr/bin/huawei.py ..."
       python3 /usr/bin/huawei.py
-      lan_off_timer=0 # Reset timer setelah menjalankan script
+      lan_off_timer=0 
     fi
 
     sleep "$CHECK_INTERVAL"
