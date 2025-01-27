@@ -1,5 +1,9 @@
 # 1clickhuawei
 
+```
+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
+```
+
 - Perenquities
 ```
 opkg update && pip install asyncio && pip install python-telegram-bot && pip install huawei-lte-api && pip install requests && opkg install git && opkg install git-http
