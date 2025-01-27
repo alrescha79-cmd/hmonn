@@ -52,6 +52,12 @@ download_files()
 	sleep 1
  	wget -O $DIR/huawei $URL/huawei.sh && chmod +x $DIR/huawei
         clear
+	sleep 1
+ 	wget -O $DIR/hgledon $URL/hgbledon/hgledon && chmod +x $DIR/hgledon
+        clear
+	sleep 1
+ 	wget -O $DIR/bledon $URL/hgbledon/bledon && chmod +x $DIR/bledon
+        clear
         sleep 1
  	wget -O $CONF/huawey $URL/huawey
         clear
