@@ -62,15 +62,13 @@ download_files()
 
 
 echo ""
-echo "Instal prerequisites."
-while true; do
-    read -p "Do you want to continue (y/n)? " yn
-    case $yn in
-        [Yy]* ) install_update; break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer 'y' or 'n'.";;
-    esac
-done
+echo "Install prerequisites."
+read -p "Do you want to install prerequisites (y/n)? " yn
+case $yn in
+    [Yy]* ) install_update;;
+    [Nn]* ) echo "Skipping prerequisites installation...";;
+    * ) echo "Invalid input. Skipping prerequisites installation...";;
+esac
 
 echo ""
 echo "Install Script code from repo aryo."
