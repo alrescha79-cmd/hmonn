@@ -15,30 +15,39 @@ section.anonymous = true
 option = section:option(Value, "router_ip", "Router IP")
 option.datatype = "ipaddr"
 option.default = "192.168.8.1"
+option.placeholder = "Input IP Gateway Modem"
 
 option = section:option(Value, "username", "Username")
 option.default = "admin"
+option.placeholder = "Input Username your Modem"
 
 option = section:option(Value, "password", "Password")
 option.password = true
 option.default = "admin"
+option.placeholder = "Input Password your Modem"
 
 option = section:option(Value, "telegram_token", "Telegram Token")
+option.password = true
 option.default = ""
+option.placeholder = "Telegram BOT Token"
 
 option = section:option(Value, "chat_id", "Chat ID")
 option.default = ""
+option.placeholder = "Message Chat ID"
 
 option = section:option(Value, "message_thread_id", "Message Thread ID")
 option.datatype = "integer"
 option.default = 0
+option.placeholder = "Message Thread ID Telegram"
 
-option = section:option(Value, "lan_off_duration", "Ping Duration")
+option = section:option(Value, "lan_off_duration", "Ping Duration (s)")
 option.datatype = "uinteger"
 option.default = 5
+option.placeholder = "Enter Ping Duration in second"
 
 option = section:option(Value, "modem_path", "Modem Path")
 option.default = "/usr/bin/huawei.py"
+option.placeholder = "Path Script (/usr/bin/script.sh)"
 
 -- Add a button for starting/stopping the service
 service_btn = section:option(Button, "_service", "Control Services")
