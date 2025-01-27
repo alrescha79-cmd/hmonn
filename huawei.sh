@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# GPIO Founder Lutfa Ilham
 # Internet Monitor for Huawei
 # by Aryo Brokolly (youtube)
 # 1.0
@@ -52,19 +52,6 @@ function start() {
 function stop() {
   echo -e "Stopping ${SERVICE_NAME} service ..."
   kill $(screen -list | grep huawei-monitor | awk -F '[.]' {'print $1'}) 2>/dev/null || echo "Service not running"
-}
-
-function configure() {
-  echo "Konfigurasi Interval Pengecekan dan Durasi LAN Off"
-  read -p "Masukkan interval pengecekan (detik, default $DEFAULT_CHECK_INTERVAL): " input_interval
-  CHECK_INTERVAL=${input_interval:-$DEFAULT_CHECK_INTERVAL}
-
-  read -p "Masukkan durasi LAN off sebelum menjalankan script (detik, default $LAN_OFF_DURATION): " input_duration
-  LAN_OFF_DURATION=${input_duration:-$LAN_OFF_DURATION}
-
-  echo "Konfigurasi berhasil diperbarui:"
-  echo " - Interval Pengecekan: $CHECK_INTERVAL detik"
-  echo " - Durasi LAN Off: $LAN_OFF_DURATION detik"
 }
 
 function usage() {
