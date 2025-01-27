@@ -26,6 +26,10 @@ option.password = true
 option.default = "admin"
 option.placeholder = "Input Password your Modem"
 
+section = map:section(NamedSection, "settings", "huawey", "Telegram")
+section.addremove = false
+section.anonymous = true
+
 option = section:option(Value, "telegram_token", "Telegram Token")
 option.password = true
 option.default = ""
@@ -39,6 +43,10 @@ option = section:option(Value, "message_thread_id", "Message Thread ID")
 option.datatype = "integer"
 option.default = 0
 option.placeholder = "Message Thread ID Telegram"
+
+section = map:section(NamedSection, "settings", "huawey", "Duration")
+section.addremove = false
+section.anonymous = true
 
 option = section:option(Value, "lan_off_duration", "Ping Duration (s)")
 option.datatype = "uinteger"
