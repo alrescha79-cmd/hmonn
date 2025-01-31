@@ -28,13 +28,15 @@ clear
 
 finish(){
 clear
-	echo ""
+    echo ""
+    echo "HUAWEI MONITOR"
     echo "INSTALL SUCCESSFULLY ;)"
     echo ""
     sleep 3
-    clear
     echo "Youtube : ARYO BROKOLLY"
     echo ""
+    
+    sleep 3
     echo ""
 }
 
