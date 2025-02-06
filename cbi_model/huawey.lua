@@ -3,7 +3,6 @@ local fs = require("nixio.fs")
 map = Map("huawey", "Huawei Configuration", "Configure Huawei router settings.")
 map.description = [[
 <p>This tool helps to configure settings for various Huawei modem types including Orbit, E5577, E3372, and E5573.</p>
-<p>Use this tool conn monitor or cron "python3 /usr/bin/huawei.py"</p>
 <br>
 <p>Tutorial this <a href="https://bit.ly/aryochannel" target="_blank">HERE</a></p>
 ]]
