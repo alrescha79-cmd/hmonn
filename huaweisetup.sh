@@ -22,7 +22,24 @@ sleep 1
 clear
 pip3 install huawei-lte-api
 sleep 1
-pip install asyncio && pip install python-telegram-bot && pip install huawei-lte-api && pip install requests && opkg install git && opkg install git-http
+clear
+pip install asyncio
+sleep 1
+clear
+pip install python-telegram-bot
+sleep 1
+clear
+pip install huawei-lte-api
+sleep 1
+clear
+pip install requests 
+sleep 1
+clear
+opkg install git 
+sleep 1
+clear
+opkg install git-http
+sleep 1
 clear
 }
 
@@ -30,6 +47,7 @@ finish(){
 clear
     echo ""
     echo "HUAWEI MONITOR"
+    echo ""
     echo "INSTALL SUCCESSFULLY ;)"
     echo ""
     sleep 3
