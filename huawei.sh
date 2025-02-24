@@ -2,10 +2,15 @@
 # GPIO Founder Lutfa Ilham
 # Internet Monitor for Huawei
 # by Aryo Brokolly (youtube)
-# 1.0
+# 1.1 - Dengan Logging
+
+LOG_FILE="/var/log/huawei_monitor.log"
+log() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
 
 if [ "$(id -u)" != "0" ]; then
-  echo "This script must be run as root" 1>&2
+  log "This script must be run as root"
   exit 1
 fi
 
@@ -16,7 +21,7 @@ DEFAULT_CHECK_INTERVAL=1
 if [ -f "$CONFIG_FILE" ]; then
   source <(grep -E "^\s*option" "$CONFIG_FILE" | sed -E 's/option ([^ ]+) (.+)/\1=\2/')
 else
-  echo "Config file $CONFIG_FILE not found. Exiting."
+  log "Config file $CONFIG_FILE not found. Exiting."
   exit 1
 fi
 
@@ -25,18 +30,22 @@ MODEM_PATH=${modem_path}
 CHECK_INTERVAL=$DEFAULT_CHECK_INTERVAL
 
 function loop() {
-  echo "Monitoring LAN status..."
+  log "Monitoring LAN status..."
   lan_off_timer=0
   while true; do
     if curl -X "HEAD" --connect-timeout 3 -so /dev/null "http://bing.com"; then
+      if [ "$lan_off_timer" -ne 0 ]; then
+        log "Internet kembali normal."
+      fi
       lan_off_timer=0
     else
       lan_off_timer=$((lan_off_timer + CHECK_INTERVAL))
+      log "Internet tidak terdeteksi. Timer: $lan_off_timer detik."
     fi
 
     if [ "$lan_off_timer" -ge "$LAN_OFF_DURATION" ]; then
-      echo "LAN off selama $LAN_OFF_DURATION detik, menjalankan huawei.py ..."
-      $MODEM_PATH
+      log "LAN off selama $LAN_OFF_DURATION detik, menjalankan $MODEM_PATH ..."
+      $MODEM_PATH &>> "$LOG_FILE"
       lan_off_timer=0 
     fi
 
@@ -45,13 +54,13 @@ function loop() {
 }
 
 function start() {
-  echo -e "Starting ${SERVICE_NAME} service ..."
+  log "Starting ${SERVICE_NAME} service ..."
   screen -AmdS huawei-monitor "${0}" -l
 }
 
 function stop() {
-  echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep huawei-monitor | awk -F '[.]' {'print $1'}) 2>/dev/null || echo "Service not running"
+  log "Stopping ${SERVICE_NAME} service ..."
+  kill $(screen -list | grep huawei-monitor | awk -F '[.]' {'print $1'}) 2>/dev/null || log "Service not running"
 }
 
 function usage() {
