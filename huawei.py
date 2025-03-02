@@ -19,12 +19,12 @@ def get_wan_info(client):
     return wan_ip_address, device_name
 
 def send_telegram_message(token, chat_id, message, message_thread_id=None):
-    """Send message to Telegram, with optional message_thread_id."""
+    """Send message to Telegram, ensuring message_thread_id is optional."""
     url = f'https://api.telegram.org/bot{token}/sendMessage'
     data = {'chat_id': chat_id, 'text': message}
 
-    # Tambahkan message_thread_id jika disediakan
-    if message_thread_id is not None:
+    # Tambahkan message_thread_id jika valid (tidak None dan tidak 0)
+    if message_thread_id:
         data['message_thread_id'] = message_thread_id
 
     response = requests.post(url, data=data)
@@ -104,7 +104,6 @@ def print_header(title, creator):
     print(f"{'=' * 40}")
     print(f"{title.center(40)}")
     print(f"{'=' * 40}")
-    """print(f"Script created by: {creator}\n")"""
 
 def print_result(label, value):
     """Print result."""
