@@ -82,18 +82,23 @@ function uninstall()
 
 	echo "deleting file huawei monitor..."
     	clear
+	echo "Remove file huawei.py..."
         rm -f $DIR/huawei.py
         mv $DIR/huawei_x.py $DIR/huawei.py
 	sleep 1
+	echo "Remove file huawey.lua..."
 	rm -f $MODEL/huawey.lua
 	clear
 	sleep 1
+	echo "Remove file huawei..."
 	rm -f $DIR/huawei
 	clear
 	sleep 1
+	echo "Remove file huawey..."
 	rm -f $CONF/huawey
         clear
         sleep 1
+	echo "Remove file huawey.lua..."
   	rm -f $CON/huawey.lua
  	sleep1
   echo " Uninstall Huawei Monitor succesfully..."
