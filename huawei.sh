@@ -4,6 +4,11 @@
 # by Aryo Brokolly (youtube)
 # 1.1 - Dengan Logging
 
+DIR=/usr/bin
+CONF=/etc/config
+MODEL=/usr/lib/lua/luci/model/cbi
+CON=/usr/lib/lua/luci/controller
+
 LOG_FILE="/var/log/huawei_monitor.log"
 log() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
@@ -69,6 +74,30 @@ Usage:
   -r  Run ${SERVICE_NAME} service
   -s  Stop ${SERVICE_NAME} service
 EOF
+}
+
+function uninstall()
+{		
+
+	echo "deleting file huawei monitor..."
+    	clear
+        rm -f $DIR/huawei.py
+        mv $DIR/huawei_x.py $DIR/huawei.py
+	sleep 1
+	rm -f $MODEL/huawey.lua
+	clear
+	sleep 1
+	rm -f $DIR/huawei
+	clear
+	sleep 1
+	rm -f $CONF/huawey
+        clear
+        sleep 1
+  	rm -f $CON/huawey.lua
+ 	sleep1
+  echo " Uninstall Huawei Monitor succesfully..."
+  sleep 5
+  exit
 }
 
 case "${1}" in
