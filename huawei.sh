@@ -73,6 +73,7 @@ function usage() {
 Usage:
   -r  Run ${SERVICE_NAME} service
   -s  Stop ${SERVICE_NAME} service
+  -x  Uninstall ${SERVICE_NAME} service
 EOF
 }
 
