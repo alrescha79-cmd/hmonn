@@ -101,6 +101,7 @@ function uninstall()
 	echo "Remove file huawey.lua..."
   	rm -f $CON/huawey.lua
  	sleep1
+       clear
   echo " Uninstall Huawei Monitor succesfully..."
   sleep 5
   exit
