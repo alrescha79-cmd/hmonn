@@ -110,6 +110,9 @@ case "${1}" in
   -s)
     stop
     ;;
+  -x)
+    uninstall
+    ;;
   *)
     usage
     ;;
