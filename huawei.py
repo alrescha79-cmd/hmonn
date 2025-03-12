@@ -60,32 +60,57 @@ def main():
     hostname = socket.gethostname()
     connection_url = f"http://{username}:{password}@{router_ip}/"
 
-    with Connection(connection_url) as connection:
-        client = Client(connection)
-        try:
-            print_header("Get a new WAN IP Address", "")
+    try:
+        with Connection(connection_url) as connection:
+            client = Client(connection)
+            try:
+                print_header("Get a new WAN IP Address", "")
 
-            wan_ip_address, device_name = fetch_wan_info(client)
-            print_result("Modem Name", device_name)
-            print_result("Current IP", wan_ip_address)
+                wan_ip_address, device_name = fetch_wan_info(client)
+                print_result("Modem Name", device_name)
+                print_result("Current IP", wan_ip_address)
 
-            print("Initiating IP change process...")
-            initiate_ip_change(client)
+                print("Initiating IP change process...")
+                initiate_ip_change(client)
 
-            time.sleep(5)
+                time.sleep(5)
 
-            print("Waiting for the IP to be changed...")
-            wan_ip_address_after_plmn, _ = fetch_wan_info(client)
-            print_result("New IP", wan_ip_address_after_plmn)
-            send_telegram_message(telegram_token, chat_id, f"⚙️ Change IP-{hostname}.\n===============\n🔰 Modem Name: {device_name}\n🔰 Current IP: {wan_ip_address}\n🔰 New IP: {wan_ip_address_after_plmn} \n\n✅ IP change successfully.\n===============\n👨‍🔧 By Aryo Brokolly",
-                message_thread_id=message_thread_id
-            )
+                print("Waiting for the IP to be changed...")
+                wan_ip_address_after_plmn, _ = fetch_wan_info(client)
+                print_result("New IP", wan_ip_address_after_plmn)
+                send_telegram_message(telegram_token, chat_id, f"⚙️ Change IP-{hostname}.\n===============\n🔰 Modem Name: {device_name}\n🔰 Current IP: {wan_ip_address}\n🔰 New IP: {wan_ip_address_after_plmn} \n\n✅ IP change successfully.\n===============\n👨‍🔧 By Aryo Brokolly",
+                    message_thread_id=message_thread_id
+                )
 
-            print_success("IP has been successfully changed.")
+                print_success("IP has been successfully changed.")
 
-        except Exception as e:
-            print_error(f"An error occurred: {e}")
-            send_telegram_message(telegram_token, chat_id, f"An error occurred: {e}", message_thread_id=message_thread_id)
+            except Exception as e:
+                error_message = str(e)
+
+                # Handle different types of error messages
+                if "401" in error_message or "Username and Password wrong" in error_message:
+                    clean_error = "Error: Invalid username or password."
+                elif "Connection refused" in error_message or "Name or service not known" in error_message:
+                    clean_error = "Error: Could not connect to the router. Check the IP address or network connection."
+                else:
+                    clean_error = "An unexpected error occurred. Please check your settings."
+
+                print_error(clean_error)
+                send_telegram_message(telegram_token, chat_id, clean_error, message_thread_id=message_thread_id)
+    except Exception as e:
+        error_message = str(e)
+
+        # Handle connection-related issues
+        if "401" in error_message or "Username and Password wrong" in error_message:
+            clean_error = "Error: Invalid username or password."
+        elif "Connection refused" in error_message or "Name or service not known" in error_message:
+            clean_error = "Error: Could not connect to the router. Check the IP address or network connection."
+        else:
+            clean_error = "Unexpected error: " + error_message
+
+        print_error(clean_error)
+        send_telegram_message(telegram_token, chat_id, clean_error, message_thread_id=message_thread_id)
+            
 
 def fetch_wan_info(client):
     """Fetch WAN IP address and device name."""
