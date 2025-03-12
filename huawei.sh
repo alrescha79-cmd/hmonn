@@ -107,7 +107,8 @@ EOF
 function update(){
 clear
     echo "Updating..."
-    
+    sleep 3
+    clear
     retry_download "$MODEL/huawey.lua" "$URL/cbi_model/huawey.lua"
     retry_download "$DIR/huawei.py" "$URL/huawei.py"
     chmod +x "$DIR/huawei.py"
@@ -117,7 +118,9 @@ clear
     
     retry_download "$CON/huawey.lua" "$URL/controller/huawey.lua"
     chmod +x "$CON/huawey.lua"
+    clear
     echo " Update Huawei Monitor succesfully..."
+    sleep 4
 }
 
 function uninstall()
