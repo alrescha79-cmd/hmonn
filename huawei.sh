@@ -8,11 +8,37 @@ DIR=/usr/bin
 CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
+URL=https://raw.githubusercontent.com/saputribosen/1clickhuawei/main
 
 LOG_FILE="/var/log/huawei_monitor.log"
 log() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
+
+retry_download() {
+    local file_path=$1
+    local url=$2
+    local max_retries=5
+    local attempt=1
+
+    while [ $attempt -le $max_retries ]; do
+        wget -O "$file_path" "$url"
+        if [ -s "$file_path" ]; then
+            echo "Download successful: $file_path"
+            return 0
+        else
+            echo "Download failed or file size 0 KB. Retrying ($attempt/$max_retries)..."
+            rm -f "$file_path"
+            attempt=$((attempt + 1))
+            sleep 2
+        fi
+    done
+
+    echo "Failed to download $file_path after $max_retries attempts."
+    echo "Check your internet connection and try again. Exiting."
+    exit 1
+}
+
 
 if [ "$(id -u)" != "0" ]; then
   log "This script must be run as root"
@@ -75,6 +101,22 @@ Usage:
   -s  Stop ${SERVICE_NAME} service
   -x  Uninstall ${SERVICE_NAME} service
 EOF
+}
+
+function update(){
+clear
+    echo "Updating..."
+    
+    retry_download "$MODEL/huawey.lua" "$URL/cbi_model/huawey.lua"
+    retry_download "$DIR/huawei.py" "$URL/huawei.py"
+    chmod +x "$DIR/huawei.py"
+    
+    retry_download "$DIR/huawei" "$URL/huawei.sh"
+    chmod +x "$DIR/huawei"
+    
+    retry_download "$CON/huawey.lua" "$URL/controller/huawey.lua"
+    chmod +x "$CON/huawey.lua"
+    echo " Update Huawei Monitor succesfully..."
 }
 
 function uninstall()
