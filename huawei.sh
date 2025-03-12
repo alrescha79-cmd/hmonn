@@ -99,6 +99,7 @@ function usage() {
 Usage:
   -r  Run ${SERVICE_NAME} service
   -s  Stop ${SERVICE_NAME} service
+  -u  Update ${SERVICE_NAME} service
   -x  Uninstall ${SERVICE_NAME} service
 EOF
 }
@@ -158,6 +159,9 @@ case "${1}" in
     ;;
   -s)
     stop
+    ;;
+  -u)
+    update
     ;;
   -x)
     uninstall
