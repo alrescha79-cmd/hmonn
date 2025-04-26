@@ -5,11 +5,11 @@ import logging
 from huawei_lte_api.Client import Client
 from huawei_lte_api.Connection import Connection
 import time
-import telegram
+#import telegram
 import socket
 import requests
 import re
-from telegram import Bot
+#from telegram import Bot
 
 def get_wan_info(client):
     wan_info = client.device.information()
