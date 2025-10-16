@@ -91,12 +91,13 @@ status_title.rawhtml = true
 
 local function is_service_running()
   local rc_path = "/etc/rc.local"
-  local script_line = "/usr/bin/huawei -r"
+  local script_line = "nohup python3 /usr/bin/huawei.py >/tmp/huawei.log 2>&1 &"
+  -- local script_line = "/usr/bin/huawei -r"
   return fs.readfile(rc_path) and fs.readfile(rc_path):find(script_line, 1, true)
 end
 
 local function update_status()
-  if is_service_running() then
+  if is_service_running() then33
     service_btn.inputtitle = "Stop Service"
     service_btn.inputstyle = "remove"
     status_title.value = '<span style="color:green;">Service is Running</span>'
