@@ -113,7 +113,6 @@ case $yn in
 esac
 
 echo ""
-echo "Install Script code from repo aryo."
 
 while true; do
     read -p "This will download the files. Do you want to continue (y/n)? " yn

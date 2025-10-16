@@ -75,12 +75,11 @@ def monitor_ip_changes(client, token, chat_id, thread_id, device_name, hostname)
             if current_ip and current_ip != last_ip:
                 msg = (
                     f"🔄 Pergantian IP Otomatis - {hostname}\n"
-                    f"=========================\n"
+                    f"═══════════════════════════\n"
                     f"📡 Modem: {device_name}\n"
-                    f"🌐 Lama: {last_ip or '-'}\n"
-                    f"🆕 Baru: {current_ip}\n"
-                    f"=========================\n"
-                    f"👨‍💻"
+                    f"🌐 IP Lama: {last_ip or '-'}\n"
+                    f"🆕 IP Baru: {current_ip}\n"
+                    f"═══════════════════════════\n"
                 )
                 send_telegram_message(token, chat_id, msg, thread_id)
                 print(msg)
@@ -96,7 +95,7 @@ def main():
     config = load_openwrt_config()
     router_ip = config.get("router_ip", "192.168.8.1")
     username = config.get("username", "admin")
-    password = config.get("password", "admin")
+    password = config.get("password", "1sampek8")
     token = config.get("telegram_token", "")
     chat_id = config.get("chat_id", "")
     thread_id = config.get("message_thread_id")
@@ -120,7 +119,7 @@ def main():
 
                 old_ip = load_last_ip() or current_ip
                 send_telegram_message(token, chat_id,
-                    f"🔧 Ganti IP Manual dimulai di {hostname}\n=========================\n📡 Modem: {device_name}\n🌐 IP Sekarang: {old_ip}\n=========================\n",
+                    f"🔧 Ganti IP Manual dimulai di {hostname}\n═══════════════════════════\n📡 Modem: {device_name}\n🌐 IP Sekarang: {old_ip}\n═══════════════════════════\n",
                     thread_id)
 
                 if initiate_ip_change(client):
@@ -128,11 +127,11 @@ def main():
                     new_ip, _ = get_wan_info(client)
                     msg = (
                         f"✅ IP BERHASIL DIGANTI MANUAL - {hostname}\n"
-                        f"=========================\n"
+                        f"═══════════════════════════\n"
                         f"📡 Modem: {device_name}\n"
                         f"🌐 IP Lama: {old_ip}\n"
-                        f"🆕 IP Baru: {new_ip or 'Tidak terdeteksi'}"
-                        f"=========================\n"
+                        f"🆕 IP Baru: {new_ip or 'Tidak terdeteksi'}\n"
+                        f"═══════════════════════════\n"
                     )
                     send_telegram_message(token, chat_id, msg, thread_id)
                     save_last_ip(new_ip)
@@ -145,7 +144,7 @@ def main():
                 print("🛰️ Mode: Monitoring Otomatis")
                 save_last_ip(current_ip)
                 send_telegram_message(token, chat_id,
-                    f"🚀 Monitoring otomatis dimulai di {hostname}\n=========================\n📡 Modem: {device_name}\n🌐 IP awal: {current_ip}\n=========================\n",
+                    f"🚀 Monitoring otomatis dimulai di {hostname}\n═══════════════════════════\n📡 Modem: {device_name}\n🌐 IP Sekarang: {current_ip}\n═══════════════════════════\n",
                     thread_id)
                 monitor_ip_changes(client, token, chat_id, thread_id, device_name, hostname)
 
