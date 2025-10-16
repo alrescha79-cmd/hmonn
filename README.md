@@ -1,7 +1,7 @@
 # 1clickhuawei
 
-
 - Run installation script:
-```
-bash -c "$(wget -qO - 'https://raw.githubusercontent.com/saputribosen/1clickhuawei/refs/heads/main/huaweisetup.sh')"
-```
+
+    ```bash
+    bash -c "$(wget -qO - 'https://raw.githubusercontent.com/alrescha79-cmd/hmonn/refs/heads/main/huaweisetup.sh')"
+    ```

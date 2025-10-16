@@ -1,14 +1,10 @@
 #!/bin/bash
-# GPIO Founder Lutfa Ilham
-# Internet Monitor for Huawei
-# by Aryo Brokolly (youtube)
-# 1.1 - Dengan Logging
 
 DIR=/usr/bin
 CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
-URL=https://raw.githubusercontent.com/saputribosen/1clickhuawei/main
+URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
 
 LOG_FILE="/var/log/huawei_monitor.log"
 log() {

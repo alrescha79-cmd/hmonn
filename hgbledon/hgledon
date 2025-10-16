@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# HG680P GPIO Wrapper
-# by Lutfa Ilham
-# v1.0
-# GPIO Founder Lutfa Ilham
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
