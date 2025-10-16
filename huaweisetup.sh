@@ -5,7 +5,7 @@ DIR=/usr/bin
 CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
-URL=https://raw.githubusercontent.com/saputribosen/1clickhuawei/main
+URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
 
 retry_download() {
     local file_path=$1
@@ -78,7 +78,6 @@ finish(){
     echo "huawei -x : Uninstall Huawei Monitor service"
     echo ""
     sleep 3
-    echo "Youtube : ARYO BROKOLLY"
     echo ""
     sleep 5
     echo ""
