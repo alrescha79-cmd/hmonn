@@ -97,7 +97,7 @@ local function is_service_running()
 end
 
 local function update_status()
-  if is_service_running() then33
+  if is_service_running() then
     service_btn.inputtitle = "Stop Service"
     service_btn.inputstyle = "remove"
     status_title.value = '<span style="color:green;">Service is Running</span>'
