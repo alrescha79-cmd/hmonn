@@ -46,13 +46,15 @@ def load_openwrt_config(cfg="/etc/config/huawey"):
 
 def save_last_ip(ip):
     if ip:
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         with open(CACHE_FILE, "w") as f:
-            f.write(ip)
+            f.write(f"{ip}\n{timestamp}")
 
 def load_last_ip():
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE) as f:
-            return f.read().strip()
+            lines = f.read().strip().split('\n')
+            return lines[0] if lines else None
     return None
 
 def initiate_ip_change(client):
