@@ -54,36 +54,6 @@ router_ip.datatype   = "ipaddr"
 router_ip.default    = "192.168.8.1"
 router_ip.placeholder= "Enter Modem Gateway IP"
 
--- Button to apply IP manually (without Save & Apply)
-local apply_ip_btn = section:option(Button, "_apply_router_ip", "Apply Router IP")
-apply_ip_btn.inputstyle = "apply"
-function apply_ip_btn.write(self, sid)
-  local v = router_ip:formvalue(sid)
-  if v and #v > 0 then
-    sys.call(string.format(
-      "uci set huawey.settings.router_ip='%s'; uci commit huawey",
-      v
-    ))
-  end
-end
-
--- Run Python script now (non-blocking) with lock to prevent multiple executions
-local run_py_btn = section:option(Button, "_run_python_now", "Change IP Manually")
-run_py_btn.inputstyle = "apply"
-function run_py_btn.write(self, sid)
-  local lock_file = "/tmp/huawei_change_ip.lock"
-  -- Check if lock file exists and is recent (less than 60 seconds old)
-  if fs.access(lock_file) then
-    local lock_age = sys.exec("echo $(( $(date +%s) - $(stat -c %Y " .. lock_file .. " 2>/dev/null || echo 0) ))"):gsub("\n", "")
-    if tonumber(lock_age) and tonumber(lock_age) < 60 then
-      return -- Skip if already running recently
-    end
-  end
-  -- Create lock file and run the script
-  sys.call("touch " .. lock_file .. " && nohup python3 /usr/bin/huawei.py --change >/tmp/huawei.log 2>&1 && rm -f " .. lock_file .. " &")
-end
-
-
 -- Modem account
 local username = section:option(Value, "username", "Username")
 username.default    = "admin"
@@ -93,6 +63,221 @@ local password = section:option(Value, "password", "Password")
 password.password   = true
 password.default    = "admin"
 password.placeholder= "Enter Modem Password"
+
+-- Status message for IP change
+local ip_change_status = section:option(DummyValue, "_ip_change_status", "")
+ip_change_status.rawhtml = true
+ip_change_status.value = '<div id="ip_change_status" style="display:none; padding:10px; border-radius:5px; margin-top:10px;"></div>'
+
+-- Run Python script now (non-blocking) with lock to prevent multiple executions
+local run_py_btn = section:option(Button, "_run_python_now", "Change IP Manually")
+run_py_btn.inputstyle = "apply"
+run_py_btn.rawhtml = true
+
+-- Add JavaScript for loading animation - inject at the bottom of the page
+run_py_btn.description = [=[
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+  // Prevent double initialization
+  if (window.huaweiChangeIpInitialized) return;
+  window.huaweiChangeIpInitialized = true;
+  
+  console.log('Initializing Change IP button handler...');
+  
+  function showStatus(type, message) {
+    var statusDiv = document.getElementById('ip_change_status');
+    if (!statusDiv) {
+      console.error('Status div not found!');
+      return;
+    }
+    
+    statusDiv.style.display = 'block';
+    
+    if (type === 'loading') {
+      statusDiv.style.backgroundColor = '#fff3cd';
+      statusDiv.style.color = '#856404';
+      statusDiv.style.border = '1px solid #ffeeba';
+      statusDiv.innerHTML = '<div style="display:flex; align-items:center;"><div class="spinner"></div><span><strong>🔄 Mencari IP baru...</strong> Mohon tunggu beberapa saat.</span></div>';
+    } else if (type === 'success') {
+      statusDiv.style.backgroundColor = '#d4edda';
+      statusDiv.style.color = '#155724';
+      statusDiv.style.border = '1px solid #c3e6cb';
+      statusDiv.innerHTML = '<strong>✓ Berhasil!</strong> ' + message;
+    } else if (type === 'error') {
+      statusDiv.style.backgroundColor = '#f8d7da';
+      statusDiv.style.color = '#721c24';
+      statusDiv.style.border = '1px solid #f5c6cb';
+      statusDiv.innerHTML = '<strong>✗ Gagal!</strong> ' + message;
+    }
+  }
+  
+  function checkStatus() {
+    var checkCount = 0;
+    var maxChecks = 15;
+    
+    var checkInterval = setInterval(function() {
+      checkCount++;
+      
+      fetch('/cgi-bin/luci/admin/network/huawey_status?t=' + new Date().getTime())
+        .then(function(response) { return response.text(); })
+        .then(function(data) {
+          console.log('Status check ' + checkCount + ': ' + data.trim());
+          
+          if (data.indexOf('complete') !== -1) {
+            clearInterval(checkInterval);
+            showStatus('success', 'IP baru telah ditemukan dan diterapkan. Halaman akan dimuat ulang dalam 7 detik...');
+            setTimeout(function() {
+              window.location.reload();
+            }, 7000);
+          } else if (data.indexOf('error') !== -1) {
+            clearInterval(checkInterval);
+            showStatus('error', 'Terjadi kesalahan saat mencari IP baru. Silakan coba lagi.');
+          } else if (checkCount >= maxChecks) {
+            clearInterval(checkInterval);
+            showStatus('success', 'Proses selesai! Halaman akan dimuat ulang untuk menampilkan IP terbaru...');
+            setTimeout(function() {
+              window.location.reload();
+            }, 7000);
+          }
+        })
+        .catch(function(err) {
+          console.error('Error checking status:', err);
+          if (checkCount >= maxChecks) {
+            clearInterval(checkInterval);
+            showStatus('error', 'Timeout! Halaman akan dimuat ulang...');
+            setTimeout(function() {
+              window.location.reload();
+            }, 2000);
+          }
+        });
+    }, 2000);
+  }
+  
+  function initButton() {
+    // Find the form that contains our button
+    var forms = document.querySelectorAll('form');
+    var targetForm = null;
+    
+    for (var i = 0; i < forms.length; i++) {
+      var buttons = forms[i].querySelectorAll('input[type="submit"]');
+      for (var j = 0; j < buttons.length; j++) {
+        if (buttons[j].value && 
+            (buttons[j].value.indexOf('Change IP') !== -1 || 
+             buttons[j].value.indexOf('Manually') !== -1)) {
+          targetForm = forms[i];
+          console.log('Found Change IP button:', buttons[j].value);
+          
+          // Intercept form submission
+          buttons[j].onclick = function(e) {
+            console.log('Change IP button clicked!');
+            
+            // Show loading status immediately
+            showStatus('loading', '');
+            
+            // Prevent default form submission
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Submit form via AJAX
+            var formData = new FormData(targetForm);
+            // Add the button name and value to trigger the write function
+            formData.append('cbi.apply', 'Change IP Manually');
+            formData.append('cbid.huawey.settings._run_python_now', 'Change IP Manually');
+            
+            console.log('Submitting form with FormData...');
+            
+            fetch(targetForm.action || window.location.href, {
+              method: 'POST',
+              body: formData
+            })
+            .then(function(response) {
+              console.log('Form submitted successfully, status:', response.status);
+              return response.text();
+            })
+            .then(function(html) {
+              console.log('Response received, starting status check...');
+              // Start checking status
+              setTimeout(checkStatus, 1000);
+            })
+            .catch(function(err) {
+              console.error('Error submitting form:', err);
+              showStatus('error', 'Gagal mengirim perintah ke server.');
+            });
+            
+            return false;
+          };
+          
+          return true;
+        }
+      }
+    }
+    
+    console.log('Change IP button not found yet...');
+    return false;
+  }
+  
+  // Try to init immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(initButton, 100);
+    });
+  } else {
+    setTimeout(initButton, 100);
+  }
+  
+  // Retry a few times in case the button loads dynamically
+  var retryCount = 0;
+  var retryInterval = setInterval(function() {
+    retryCount++;
+    if (initButton() || retryCount >= 10) {
+      clearInterval(retryInterval);
+    }
+  }, 500);
+})();
+//]]>
+</script>
+<style type="text/css">
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #856404;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+]=]
+
+function run_py_btn.write(self, sid)
+  local lock_file = "/tmp/huawei_change_ip.lock"
+  local status_file = "/tmp/huawei_change_ip_status.txt"
+  
+  -- Log untuk debugging
+  sys.call("echo '[DEBUG] run_py_btn.write() called at $(date)' >> /tmp/huawei_debug.log")
+  
+  -- Check if lock file exists and is recent (less than 60 seconds old)
+  if fs.access(lock_file) then
+    local lock_age = sys.exec("echo $(( $(date +%s) - $(stat -c %Y " .. lock_file .. " 2>/dev/null || echo 0) ))"):gsub("\n", "")
+    if tonumber(lock_age) and tonumber(lock_age) < 60 then
+      sys.call("echo '[DEBUG] Lock file exists, skipping...' >> /tmp/huawei_debug.log")
+      return -- Skip if already running recently
+    end
+  end
+  
+  -- Reset status file
+  sys.call("echo 'running' > " .. status_file)
+  sys.call("echo '[DEBUG] Status set to running' >> /tmp/huawei_debug.log")
+  
+  -- Create lock file and run the script with status update
+  sys.call("touch " .. lock_file .. " && (python3 /usr/bin/huawei.py --change >/tmp/huawei.log 2>&1 && echo 'complete' > " .. status_file .. " || echo 'error' > " .. status_file .. ") && rm -f " .. lock_file .. " &")
+  sys.call("echo '[DEBUG] Python script started' >> /tmp/huawei_debug.log")
+end
 
 -- ========== Telegram ==========
 section = map:section(NamedSection, "settings", "huawey", "Telegram")

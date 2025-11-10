@@ -71,26 +71,36 @@ def monitor_ip_changes(client, token, chat_id, thread_id, device_name, hostname)
     """Pemantauan otomatis setiap 30 detik"""
     print("\n🛰️ Monitoring IP otomatis dimulai ...")
     last_ip = load_last_ip()
+    
     while True:
         try:
             current_ip, _ = get_wan_info(client)
+            
             if current_ip and current_ip != last_ip:
+                # IP berubah, kirim notifikasi
                 msg = (
                     f"🔄 Pergantian IP Otomatis - {hostname}\n"
                     f"═══════════════════════════\n"
                     f"📡 Modem: {device_name}\n"
                     f"🌐 IP Lama: {last_ip or '-'}\n"
                     f"🆕 IP Baru: {current_ip}\n"
+                    f"⏰ Waktu: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
                     f"═══════════════════════════\n"
                 )
-                send_telegram_message(token, chat_id, msg, thread_id)
                 print(msg)
+                send_telegram_message(token, chat_id, msg, thread_id)
                 save_last_ip(current_ip)
                 last_ip = current_ip
-            else:
+            elif current_ip:
+                # IP belum berubah
                 print(f"[{time.strftime('%H:%M:%S')}] IP belum berubah ({current_ip})")
+            else:
+                # Tidak bisa mendapatkan IP
+                print(f"[{time.strftime('%H:%M:%S')}] ⚠️ Tidak bisa mendapatkan IP dari modem")
+                
         except Exception as e:
             print(f"⚠️ Error monitoring: {e}")
+            
         time.sleep(30)
 
 def main():
@@ -121,7 +131,12 @@ def main():
 
                 old_ip = load_last_ip() or current_ip
                 send_telegram_message(token, chat_id,
-                    f"🔧 Ganti IP Manual dimulai di {hostname}\n═══════════════════════════\n📡 Modem: {device_name}\n🌐 IP Sekarang: {old_ip}\n═══════════════════════════\n",
+                    f"🔧 Ganti IP Manual dimulai di {hostname}\n"
+                    f"═══════════════════════════\n"
+                    f"📡 Modem: {device_name}\n"
+                    f"🌐 IP Sekarang: {old_ip}\n"
+                    f"⏰ Waktu: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                    f"═══════════════════════════\n",
                     thread_id)
 
                 if initiate_ip_change(client):
@@ -133,20 +148,29 @@ def main():
                         f"📡 Modem: {device_name}\n"
                         f"🌐 IP Lama: {old_ip}\n"
                         f"🆕 IP Baru: {new_ip or 'Tidak terdeteksi'}\n"
+                        f"⏰ Waktu: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
                         f"═══════════════════════════\n"
                     )
                     send_telegram_message(token, chat_id, msg, thread_id)
                     save_last_ip(new_ip)
                     print(msg)
                 else:
-                    send_telegram_message(token, chat_id, "❌ Gagal mengganti IP manual", thread_id)
+                    send_telegram_message(token, chat_id, 
+                        f"❌ Gagal mengganti IP manual di {hostname}\n"
+                        f"⏰ Waktu: {time.strftime('%Y-%m-%d %H:%M:%S')}", 
+                        thread_id)
 
             else:
                 # MODE MONITOR OTOMATIS (BOOT)
                 print("🛰️ Mode: Monitoring Otomatis")
                 save_last_ip(current_ip)
                 send_telegram_message(token, chat_id,
-                    f"🚀 Monitoring otomatis dimulai di {hostname}\n═══════════════════════════\n📡 Modem: {device_name}\n🌐 IP Sekarang: {current_ip}\n═══════════════════════════\n",
+                    f"🚀 Monitoring otomatis dimulai di {hostname}\n"
+                    f"═══════════════════════════\n"
+                    f"📡 Modem: {device_name}\n"
+                    f"🌐 IP Sekarang: {current_ip}\n"
+                    f"⏰ Waktu: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                    f"═══════════════════════════\n",
                     thread_id)
                 monitor_ip_changes(client, token, chat_id, thread_id, device_name, hostname)
 
