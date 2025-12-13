@@ -4,7 +4,8 @@ DIR=/usr/bin
 CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
-URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
+# URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
+URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/refs/heads/dev
 
 LOG_FILE="/var/log/huawei_monitor.log"
 log() {
