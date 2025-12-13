@@ -9,6 +9,7 @@ Skrip ini berfungsi untuk memonitor koneksi internet pada modem Huawei dan melak
 *   **Ganti Otomatis**: Jika koneksi internet terputus, skrip akan mencoba menjalankan skrip Python (kemungkinan untuk mengganti ip pada modem atau menyambungkan ulang).
 *   **Indikator LED**: Menggunakan LED untuk menunjukkan status (misalnya, LED mati saat koneksi terputus dan menyala kembali saat koneksi pulih).
 *   **Notifikasi Telegram**: Mengirimkan pemberitahuan ke Telegram ketika koneksi internet hilang dan ketika berhasil dipulihkan.
+*   **Kontrol via Telegram Bot**: Mengontrol layanan monitoring dan ganti IP langsung dari Telegram dengan perintah `/start`, `/status`, `/stop`, `/restart`, dan `/change`.
 *   **Antarmuka Web LuCI**: Dilengkapi dengan antarmuka pada LuCI untuk memudahkan konfigurasi parameter seperti IP router, username, password, token Telegram, dan lainnya.
 *   **Instalasi Mudah**: Proses instalasi yang mudah dengan satu baris perintah.
 
@@ -48,9 +49,26 @@ Setelah instalasi dan konfigurasi, skrip akan berjalan secara otomatis di latar 
 
 Anda juga bisa menjalankan perintah berikut dari terminal untuk mengelola layanan:
 *   `huawei`: Menjalankan skrip monitor secara manual.
-*   `huawei -d`: Mengaktifkan layanan monitoring (dijalankan via cron).
+*   `huawei -r`: Mengaktifkan layanan monitoring (dijalankan via cron).
 *   `huawei -s`: Menonaktifkan layanan monitoring.
+*   `huawei -b`: Menjalankan Telegram Bot service.
+*   `huawei -k`: Menghentikan Telegram Bot service.
+*   `huawei -u`: Memperbarui skrip ke versi terbaru.
 *   `huawei -x`: Menghapus instalasi skrip dan layanan.
+
+## Kontrol via Telegram Bot
+
+Setelah Bot Telegram dijalankan dengan `huawei -b`, Anda dapat mengontrol monitoring modem langsung dari Telegram menggunakan perintah berikut:
+
+| Perintah | Fungsi |
+|----------|--------|
+| `/start` | Menampilkan IP sekarang dan waktu terakhir diganti |
+| `/status` | Menampilkan status layanan monitoring (Running/Stopped) |
+| `/stop` | Menonaktifkan layanan monitoring |
+| `/restart` | Mengaktifkan ulang layanan monitoring |
+| `/change` | Mengganti IP modem secara manual |
+
+> **Catatan**: Bot hanya akan merespons perintah dari Chat ID yang sudah dikonfigurasi di LuCI untuk alasan keamanan.
 
 ## Screenshot
 

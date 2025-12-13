@@ -90,11 +90,24 @@ function stop() {
   kill $(screen -list | grep huawei-monitor | awk -F '[.]' {'print $1'}) 2>/dev/null || log "Service not running"
 }
 
+function bot_start() {
+  log "Starting Telegram Bot service ..."
+  screen -AmdS huawei-bot python3 /usr/bin/telegram_bot.py
+  log "Telegram Bot started in background"
+}
+
+function bot_stop() {
+  log "Stopping Telegram Bot service ..."
+  kill $(screen -list | grep huawei-bot | awk -F '[.]' {'print $1'}) 2>/dev/null || log "Bot not running"
+}
+
 function usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
   -s  Stop ${SERVICE_NAME} service
+  -b  Start Telegram Bot service
+  -k  Stop Telegram Bot service
   -u  Update ${SERVICE_NAME} service
   -x  Uninstall ${SERVICE_NAME} service
 EOF
@@ -108,6 +121,9 @@ clear
     retry_download "$MODEL/huawey.lua" "$URL/cbi_model/huawey.lua"
     retry_download "$DIR/huawei.py" "$URL/huawei.py"
     chmod +x "$DIR/huawei.py"
+    
+    retry_download "$DIR/telegram_bot.py" "$URL/telegram_bot.py"
+    chmod +x "$DIR/telegram_bot.py"
     
     retry_download "$DIR/huawei" "$URL/huawei.sh"
     chmod +x "$DIR/huawei"
@@ -158,6 +174,12 @@ case "${1}" in
     ;;
   -s)
     stop
+    ;;
+  -b)
+    bot_start
+    ;;
+  -k)
+    bot_stop
     ;;
   -u)
     update
