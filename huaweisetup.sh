@@ -5,7 +5,8 @@ DIR=/usr/bin
 CONF=/etc/config
 MODEL=/usr/lib/lua/luci/model/cbi
 CON=/usr/lib/lua/luci/controller
-URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
+# URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/main
+URL=https://raw.githubusercontent.com/alrescha79-cmd/hmonn/refs/heads/dev
 
 retry_download() {
     local file_path=$1
@@ -74,6 +75,8 @@ finish(){
     echo "=========== HUAWEI MONITOR ==========="
     echo "huawei -r : Run Huawei Monitor service"
     echo "huawei -s : Stop Huawei Monitor service"
+    echo "huawei -b : Start Telegram Bot service"
+    echo "huawei -k : Stop Telegram Bot service"
     echo "huawei -u : Update Huawei Monitor service"
     echo "huawei -x : Uninstall Huawei Monitor service"
     echo ""
@@ -92,6 +95,9 @@ download_files() {
     retry_download "$MODEL/huawey.lua" "$URL/cbi_model/huawey.lua"
     retry_download "$DIR/huawei.py" "$URL/huawei.py"
     chmod +x "$DIR/huawei.py"
+    
+    retry_download "$DIR/telegram_bot.py" "$URL/telegram_bot.py"
+    chmod +x "$DIR/telegram_bot.py"
     
     retry_download "$DIR/huawei" "$URL/huawei.sh"
     chmod +x "$DIR/huawei"
